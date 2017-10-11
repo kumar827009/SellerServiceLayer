@@ -13,11 +13,11 @@ import java.net.UnknownHostException;
  */
 public class ESSingleton {
 
-    private ESSingleton clientSingleton;
-    private TransportClient transportClient;
+    private static ESSingleton clientSingleton;
+    public TransportClient transportClient;
 
     /**
-     * @param transportClient
+     * @param transportClient org.elasticsearch.client.transport.TransportClient
      */
     private ESSingleton(TransportClient transportClient) {
         this.transportClient = transportClient;
@@ -25,24 +25,22 @@ public class ESSingleton {
 
     /**
      * @return ESSingleton clientSingleton
-     * @throws UnknownHostException
+     * @throws UnknownHostException unknown Host exception
      */
-    public ESSingleton getClientSingleton() throws UnknownHostException {
-        if (!clientSingleton.isNull()) {
+    public static ESSingleton getClientSingleton() throws UnknownHostException {
+        if (clientSingleton == null) {
             synchronized (ESSingleton.class) {
                 return new ESSingleton(new PreBuiltTransportClient((Settings.EMPTY))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9200))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9200)));
+                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300))
+                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300)));
             }
         } else {
             return clientSingleton;
         }
     }
 
-    private Boolean isNull() {
-        if (this.clientSingleton != null)
-            return false;
-        else
-            return true;
+
+    public static void setClientSingleton(ESSingleton clientSingleton) {
+        ESSingleton.clientSingleton = clientSingleton;
     }
 }
