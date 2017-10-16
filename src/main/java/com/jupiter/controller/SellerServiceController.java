@@ -1,7 +1,9 @@
 package com.jupiter.controller;
 
 import com.jupiter.beans.Greeting;
+import com.jupiter.beans.Seller;
 import com.jupiter.service.ESSingleton;
+import com.jupiter.util.CommonUtil;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +17,34 @@ public class SellerServiceController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @PostMapping("/jupiter/seller/{id}")
-    public IndexResponse registerSeller(@RequestParam(value = "name", defaultValue = "World") String name,
-                                        @PathVariable("id") String id) throws UnknownHostException {
+    /**
+     * Sample JSON to fire request
+     * http://localhost:8080/jupiter/seller/
+     * <p>
+     * {
+     * "name": "wsretail",
+     * "ownerName":"aa",
+     * "address":{
+     * "email":"nk@jupiter.com",
+     * "city":"aa",
+     * "addressLineOne":"aa",
+     * "addressLineTwo":"aa",
+     * "pin":"113456"
+     * }
+     * }
+     */
+    @PostMapping("/jupiter/seller/")
+    public IndexResponse registerSeller(@RequestBody Seller seller) throws UnknownHostException {
         TransportClient client = ESSingleton.getClientSingleton().transportClient;
-        HashMap<String, String> place = new HashMap<String, String>();
-        place.put("name", "Naresh Kumar5");
-        IndexResponse response = client.prepareIndex("my_database", "places", id)
-                .setSource(place)
+        String userId = CommonUtil.generateUniqueId();
+        seller.setId(userId);
+        HashMap<String, Seller> newSeller = new HashMap<String, Seller>();
+        /* This piece of code will move to the registration module*/
+        newSeller.put(userId, seller);
+        IndexResponse response = client.prepareIndex("sellers_db", "seller", userId)
+                .setSource(seller)
                 .get();
+
         client.close();
         return response;
     }
