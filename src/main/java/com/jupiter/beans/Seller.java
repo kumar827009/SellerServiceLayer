@@ -28,31 +28,31 @@ public class Seller {
         return name;
     }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
     public void setAddress(Address address) {
         this.address = address;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
