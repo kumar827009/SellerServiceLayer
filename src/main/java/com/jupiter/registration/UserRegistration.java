@@ -9,7 +9,7 @@ public interface UserRegistration {
      *
      * @param user
      */
-    public void registerUser(User user);
+    public int registerUser(User user);
 
 
     /**
@@ -17,5 +17,5 @@ public interface UserRegistration {
      *
      * @param user
      */
-    public void unregisterUser(User user);
+    public int unregisterUser(User user);
 }

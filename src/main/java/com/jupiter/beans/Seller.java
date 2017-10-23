@@ -1,10 +1,7 @@
 package com.jupiter.beans;
 
-public class Seller {
-    String id = null;
-    String name = null;
+public class Seller extends User {
     String ownerName = null;
-    Address address = null;
 
     public Seller() {
         super();
@@ -24,13 +21,6 @@ public class Seller {
         this.address = address;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getOwnerName() {
         return ownerName;
@@ -40,19 +30,5 @@ public class Seller {
         this.ownerName = ownerName;
     }
 
-    public Address getAddress() {
-        return address;
-    }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

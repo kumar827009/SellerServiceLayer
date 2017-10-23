@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jupiter.beans.Greeting;
 import com.jupiter.beans.Seller;
+import com.jupiter.beans.User;
 import com.jupiter.service.ESSingleton;
 import com.jupiter.util.CommonUtil;
 import org.elasticsearch.action.get.GetResponse;
@@ -41,25 +42,28 @@ public class SellerServiceController {
     /**
      * Paste Sample JSON to fire request
      * http://localhost:8080/jupiter/seller/
+     * <p>
+     * curl localhost:9200/_cat/indices?v
      *
-     * @param seller
+     * @param user
      * @return
      * @throws UnknownHostException
      */
     @PostMapping("/jupiter/seller/")
-    public Seller registerSeller(@RequestBody Seller seller) throws UnknownHostException, JsonProcessingException, IOException {
+    public User registerSeller(@RequestBody User user) throws UnknownHostException, JsonProcessingException, IOException {
         TransportClient client = ESSingleton.getClientSingleton().transportClient;
         ObjectMapper mapper = new ObjectMapper();
 
         String userId = CommonUtil.generateUniqueId();
-        seller.setId(userId);
+        user.setId(userId);
 
-        String inputJson = mapper.writeValueAsString(seller);
+        String inputJson = mapper.writeValueAsString(user);
         System.out.println("Input JSON: " + inputJson);
 
         /* This piece of code will move to the registration module*/
-        IndexResponse response = client.prepareIndex("sellers_db", "seller", userId)
-                .setSource(mapper.writeValueAsString(seller), XContentType.JSON)
+        IndexResponse response = client
+                .prepareIndex("sellers_db", "seller", userId)
+                .setSource(mapper.writeValueAsString(user), XContentType.JSON)
                 .execute()
                 .actionGet();
 
@@ -70,7 +74,7 @@ public class SellerServiceController {
                 .actionGet();
 
         String source = getResponse.getSourceAsString();
-        Seller sellerResp = mapper.readValue(source, Seller.class);
+        User sellerResp = mapper.readValue(source, User.class);
 
         client.close();
         return sellerResp;
@@ -89,7 +93,8 @@ public class SellerServiceController {
         HashMap<String, Seller> newSeller = new HashMap<String, Seller>();
         /* This piece of code will move to the registration module*/
         newSeller.put(userId, seller);
-        IndexResponse response = client.prepareIndex("sellers_db", "seller", userId)
+        IndexResponse response = client
+                .prepareIndex("sellers_db", "seller", userId)
                 .setSource(seller)
                 .get();
 
